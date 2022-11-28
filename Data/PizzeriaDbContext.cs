@@ -17,7 +17,7 @@ namespace la_mia_pizzeria_static.Data
             }
         }
         private static PizzeriaDbContext _instance;
-        private PizzeriaDbContext()
+        public PizzeriaDbContext()
         {
             
         }

@@ -1,10 +1,17 @@
 using la_mia_pizzeria_static.Models.Repositories;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IDbPizzaRepository, DbPizzaRepository>();
 builder.Services.AddScoped<IDbCategoryRepository, DbCategoryRepository>();
 builder.Services.AddScoped<IDbIngredientRepository, DbIngredientRepository>();
+
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.WriteIndented = true;
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

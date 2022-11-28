@@ -1,1 +1,41 @@
-﻿
+﻿@{
+    Layout = "_FrontOfficeLayout";
+}
+<div>
+    <h1>Home</h1>
+
+    <div class="js_cards row row-cols-5">
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    axios.get("/api/pizza/get")
+    .then(response => {
+
+        const cardWrapper = document.querySelector(".js_cards");
+
+        for (let i = 0; i < response.data.length; i++) {
+
+            const pizza = response.data[i];
+            console.log(pizza);
+
+            cardWrapper.innerHTML += `
+            <div class="col">
+                <div class="card">
+                    <img src="${pizza.image}" class="card-img-top" alt="${pizza.name}">
+                    <div class="card-body">
+                        <h5 class="card-title">${pizza.name}</h5>
+                        <p class="card-text">${pizza.description}</p>
+                    </div>
+                </div>
+            </div>
+            `;          
+        }
+
+    }).catch(error => { 
+        debugger;
+        console.log(error);
+    })
+        
+</script>
