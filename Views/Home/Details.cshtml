@@ -1,0 +1,49 @@
+﻿@{
+    Layout = "_FrontOfficeLayout";
+}
+
+@model int;
+
+<div class="text-center js_pizza-wrapper">
+</div>
+
+<script type="text/javascript">
+
+    const pizzaWrapper = document.querySelector(".js_pizza-wrapper");
+
+    axios.get(`/api/pizza/details/${@Model}`)
+        .then(response => {
+            console.log(response)
+            printPizzaDetails(response.data);
+        }).catch(error => {
+            console.log(error);
+        });
+
+    function printPizzaDetails(pizza) {
+        pizzaWrapper.innerHTML += `
+            <h1>${pizza.name}</h1>
+            <div style="margin-inline: auto; width: 250px; height: 250px;">
+                <img src="${pizza.image}" alt="${pizza.name}" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+
+            <h5>Ingredienti:</h5>
+            <div class="d-flex" style="margin-inline: auto; width: fit-content; gap: 0.5rem;">
+        `;
+
+        pizza.ingredients.forEach(ingredient => {
+            pizzaWrapper.innerHTML += `<span class="badge bg-primary">${ingredient.name}</span>`
+        })
+       
+        pizzaWrapper.innerHTML += `
+            </div>
+
+            <div class="mb-3">${pizza.categoryId != null ? pizza.category.name : "Nessuna categoria associata."}</div>
+
+            <div class="mb-3">
+                <p>${pizza.description}</p>
+                    <div class="card-text">${pizza.price} €</div>
+                <div class="${pizza.isAvailable ? "text-success" : "text-danger"}">${pizza.isAvailable ? "Disponibile" : "esaurito"}</div>
+            </div>
+        `;          
+    }
+</script>

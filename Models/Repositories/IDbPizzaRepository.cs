@@ -8,6 +8,7 @@ namespace la_mia_pizzeria_static.Models.Repositories
         void Delete(Pizza pizzaToDelete);
         List<Pizza> GetAll(bool category, bool ingredients);
         Pizza GetById(int id, bool category, bool ingredients);
+        List<Pizza> GetByName(string? name);
         Pizza GetLast(bool category, bool ingredients);
         void Update(Pizza pizzaToUpdate, PizzaForm pizzaFormData);
     }

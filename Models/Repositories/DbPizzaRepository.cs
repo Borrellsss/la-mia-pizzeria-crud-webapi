@@ -1,5 +1,6 @@
 ﻿using la_mia_pizzeria_static.Data;
 using la_mia_pizzeria_static.Models.FormModels;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace la_mia_pizzeria_static.Models.Repositories
@@ -41,6 +42,15 @@ namespace la_mia_pizzeria_static.Models.Repositories
             }
 
             return db.Pizzas.Where(p => p.Id == id).First();
+        }
+        public List<Pizza> GetByName(string? name)
+        {
+            if (name == null)
+            {
+                return GetAll(false, false);
+            }
+
+            return db.Pizzas.Where(p => p.Name.ToLower().Contains(name.ToLower())).ToList<Pizza>();
         }
         public Pizza GetLast(bool category, bool ingredients)
         {
@@ -93,7 +103,6 @@ namespace la_mia_pizzeria_static.Models.Repositories
 
             db.SaveChanges();
         }
-
         public void Delete(Pizza pizzaToDelete)
         {
             db.Pizzas.Remove(pizzaToDelete);

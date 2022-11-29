@@ -15,6 +15,15 @@ namespace la_mia_pizzeria_static.Models.Repositories
         {
             throw new NotImplementedException();
         }
+        public List<Pizza> GetByName(string? name)
+        {
+            if (name == null)
+            {
+                return GetAll(false, false);
+            }
+
+            return Pizzas.Where(p => p.Name.ToLower().Contains(name.ToLower())).ToList<Pizza>();
+        }
         public Pizza GetLast(bool category, bool ingredients)
         {
             throw new NotImplementedException();

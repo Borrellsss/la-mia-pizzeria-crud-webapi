@@ -5,38 +5,71 @@
 <div>
     <h1>Home</h1>
 
+    <input type="text" class="js_search my-4 w-100" onkeyup="filterPizzas()" />
+
     <div class="js_cards row row-cols-5">
 
     </div>
 </div>
 
 <script type="text/javascript">
+
+    const cardWrapper = document.querySelector(".js_cards");
+
+    const search = document.querySelector(".js_search");
+
     axios.get("/api/pizza/get")
     .then(response => {
+        generateCards(response.data);
+    }).catch(error => { 
+        console.log(error);
+    });
 
-        const cardWrapper = document.querySelector(".js_cards");
+    let timeoutClear = null;
 
-        for (let i = 0; i < response.data.length; i++) {
+    function filterPizzas() {
 
-            const pizza = response.data[i];
-            console.log(pizza);
+        let userInput = search.value;
 
-            cardWrapper.innerHTML += `
-            <div class="col">
-                <div class="card">
-                    <img src="${pizza.image}" class="card-img-top" alt="${pizza.name}">
-                    <div class="card-body">
-                        <h5 class="card-title">${pizza.name}</h5>
-                        <p class="card-text">${pizza.description}</p>
-                    </div>
-                </div>
-            </div>
-            `;          
+        if (timeoutClear != null) {
+            clearTimeout(timeoutClear);
         }
 
-    }).catch(error => { 
-        debugger;
-        console.log(error);
-    })
+        timeoutClear = setTimeout(() => {
+            axios.get("/api/pizza/filterbyname", {
+                params: {
+                    name: userInput
+                }
+            }).then(response => {
+                generateCards(response.data);
+            }).catch(error => { 
+                console.log(error);
+            });
+        }, 500);
+    }
+
+    function generateCards(pizzas) {
+
+        cardWrapper.innerHTML = "";
+
+        for (let i = 0; i < pizzas.length; i++) {
+
+            const pizza = pizzas[i];
+
+            cardWrapper.innerHTML += `
+                <div class="col">
+                    <a href="/home/Details/${pizza.id}" style="color: black; text-decoration: none;">
+                        <div class="card">
+                            <img src="${pizza.image}" class="card-img-top" alt="${pizza.name}">
+                            <div class="card-body">
+                                <h5 class="card-title">${pizza.name}</h5>
+                                <p class="card-text">${pizza.description}</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            `;          
+        }
+    }
         
 </script>
