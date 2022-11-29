@@ -23,7 +23,7 @@ namespace la_mia_pizzeria_static.Models.Repositories
                 return db.Pizzas.Include("Ingredients").ToList();
             }
 
-            return db.Pizzas.ToList();
+            return db.Pizzas.ToList<Pizza>();
         }
 
         public Pizza GetById(int id, bool category, bool ingredients)
@@ -47,7 +47,7 @@ namespace la_mia_pizzeria_static.Models.Repositories
         {
             if (name == null)
             {
-                return GetAll(false, false);
+                return this.GetAll(false, false);
             }
 
             return db.Pizzas.Where(p => p.Name.ToLower().Contains(name.ToLower())).ToList<Pizza>();

@@ -20,7 +20,7 @@ namespace la_mia_pizzeria_static.Controllers.Api
             List<Pizza> pizzas = pizzaRepository.GetAll(true, true);
             return Ok(pizzas);
         }
-        public IActionResult FilterByName(string name)
+        public IActionResult FilterByName(string? name)
         {
             List<Pizza> filteredPizzas = pizzaRepository.GetByName(name);
 
