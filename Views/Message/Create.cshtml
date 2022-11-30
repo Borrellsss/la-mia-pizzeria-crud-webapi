@@ -1,0 +1,104 @@
+﻿@{
+    Layout = "_FrontOfficeLayout";
+}
+
+<div>
+    <form class="js_message-form">
+
+        <div class="form-floating mb-3">
+            <input id="user-name" type="text" class="form-control" placeholder="Nome">
+            <label for="user-name">Nome</label>
+            <div id="js_user-name-errors" class="text-danger d-none"></div>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input id="user-lastName" type="text" class="form-control" placeholder="Cognome">
+            <label for="user-lastName">Cognome</label>
+            <div id="js_user-lastName-errors" class="text-danger d-none"></div>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input id="user-email" type="email" class="form-control" placeholder="Email">
+            <label for="user-email">Email</label>
+            <div id="js_user-email-errors" class="text-danger d-none"></div>
+        </div>
+
+        <div class="form-floating mb-3">
+            <textarea id="user-text" class="form-control" placeholder="Messaggio"></textarea>
+            <label for="user-text">Messaggio</label>
+            <div id="js_user-text-errors" class="text-danger d-none"></div>
+        </div>
+
+        <button type="button" class="btn btn-primary" onclick="sendMessage()">Invia</button>
+    </form>
+</div>
+
+<script type="text/javascript">
+
+    const inputUserName = document.getElementById("user-name");
+    const inputUserLastName = document.getElementById("user-lastName");
+    const inputUserEmail = document.getElementById("user-email");
+    const inputUserText = document.getElementById("user-text");
+
+    //document errors wrappers
+    const inputUserNameErrorsWrapper = document.getElementById("js_user-name-errors");
+    const inputUserLastNameErrorsWrapper = document.getElementById("js_user-lastName-errors");
+    const inputUserEmailErrorsWrapper = document.getElementById("js_user-email-errors");
+    const inputUserTextErrorsWrapper = document.getElementById("js_user-text-errors");
+
+    function sendMessage() {
+        inputUserNameErrorsWrapper.classList.add("d-none");
+        inputUserLastNameErrorsWrapper.classList.add("d-none");
+        inputUserEmailErrorsWrapper.classList.add("d-none");
+        inputUserTextErrorsWrapper.classList.add("d-none");
+
+       
+        inputUserNameErrorsWrapper.innerHTML = "";
+        inputUserLastNameErrorsWrapper.innerHTML = "";
+        inputUserEmailErrorsWrapper.innerHTML = "";
+        inputUserTextErrorsWrapper.innerHTML = "";
+
+        axios.post("/api/message/create", {
+            userName: inputUserName.value,
+            userLastName: inputUserLastName.value,
+            userEmail: inputUserEmail.value,
+            text: inputUserText.value,
+        })
+        .then(response => {
+            inputUserName.value = "";
+            inputUserLastName.value = "";
+            inputUserEmail.value = "";
+            inputUserText.value = "";
+
+            swal({
+              title: "Grazie!",
+              text: "Il messaggio è stato inviato correttamente",
+              icon: "success",
+              button: "Ok",
+            });
+        }).catch(error => {
+            //console.log(JSON.stringify(error.response));
+
+            const errors = error.response.data.errors;
+
+            inputUserNameErrorsWrapper.classList.remove("d-none");
+            inputUserLastNameErrorsWrapper.classList.remove("d-none");
+            inputUserEmailErrorsWrapper.classList.remove("d-none");
+            inputUserTextErrorsWrapper.classList.remove("d-none");
+
+            errors.UserName.forEach(mesage => {
+                    inputUserNameErrorsWrapper.innerHTML = `<div>${mesage}</div>`;
+            })
+            errors.UserLastName.forEach(mesage => {
+                    inputUserLastNameErrorsWrapper.innerHTML = `<div>${mesage}</div>`;
+            })
+            errors.UserEmail.forEach(mesage => {
+                    inputUserEmailErrorsWrapper.innerHTML = `<div>${mesage}</div>`;
+            })
+            errors.Text.forEach(mesage => {
+                    inputUserTextErrorsWrapper.innerHTML = `<div>${mesage}</div>`;
+            })
+
+        })
+    }
+</script>
