@@ -5,7 +5,11 @@ namespace la_mia_pizzeria_static.Models.Repositories
 {
     public class DbCategoryRepository : IDbCategoryRepository
     {
-        private PizzeriaDbContext db = PizzeriaDbContext.Instance;
+        private PizzeriaDbContext db;
+        public DbCategoryRepository(PizzeriaDbContext _db)
+        {
+            db = _db;
+        }
         public List<Category> GetAll(bool pizzas)
         {
             if (pizzas)

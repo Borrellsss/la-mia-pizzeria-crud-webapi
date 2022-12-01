@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using la_mia_pizzeria_static.Data;
 
@@ -11,9 +12,11 @@ using la_mia_pizzeria_static.Data;
 namespace lamiapizzeriastatic.Migrations
 {
     [DbContext(typeof(PizzeriaDbContext))]
-    partial class PizzeriaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221201133549_CreateIdentitiesTables")]
+    partial class CreateIdentitiesTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -346,33 +349,6 @@ namespace lamiapizzeriastatic.Migrations
                     b.ToTable("Pizzas");
                 });
 
-            modelBuilder.Entity("la_mia_pizzeria_static.Models.Review", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("text");
-
-                    b.Property<int?>("PizzaId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PizzaId");
-
-                    b.ToTable("Reviews");
-                });
-
             modelBuilder.Entity("IngredientPizza", b =>
                 {
                     b.HasOne("la_mia_pizzeria_static.Models.Ingredient", null)
@@ -448,23 +424,9 @@ namespace lamiapizzeriastatic.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("la_mia_pizzeria_static.Models.Review", b =>
-                {
-                    b.HasOne("la_mia_pizzeria_static.Models.Pizza", "Pizza")
-                        .WithMany("Reviews")
-                        .HasForeignKey("PizzaId");
-
-                    b.Navigation("Pizza");
-                });
-
             modelBuilder.Entity("la_mia_pizzeria_static.Models.Category", b =>
                 {
                     b.Navigation("Pizzas");
-                });
-
-            modelBuilder.Entity("la_mia_pizzeria_static.Models.Pizza", b =>
-                {
-                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }

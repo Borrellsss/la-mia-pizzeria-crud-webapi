@@ -5,7 +5,11 @@ namespace la_mia_pizzeria_static.Models.Repositories
 {
     public class DbIngredientRepository : IDbIngredientRepository
     {
-        private PizzeriaDbContext db = PizzeriaDbContext.Instance;
+        private PizzeriaDbContext db;
+        public DbIngredientRepository(PizzeriaDbContext _db)
+        {
+            db = _db;
+        }
         public List<Ingredient> GetAll(bool pizzas)
         {
             if (pizzas)

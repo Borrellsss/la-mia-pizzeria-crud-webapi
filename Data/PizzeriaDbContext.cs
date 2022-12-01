@@ -1,33 +1,29 @@
 ﻿using la_mia_pizzeria_static.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace la_mia_pizzeria_static.Data
 {
-    public class PizzeriaDbContext : DbContext
+    public class PizzeriaDbContext : IdentityDbContext<IdentityUser>
     {
-        public static PizzeriaDbContext Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new PizzeriaDbContext();
-                }
-                return _instance;
-            }
-        }
-        private static PizzeriaDbContext _instance;
-        public PizzeriaDbContext()
-        {
-            
-        }
         public DbSet<Pizza> Pizzas { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<Message> Messages { get; set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public DbSet<Review> Reviews { get; set; }
+        public PizzeriaDbContext(DbContextOptions<PizzeriaDbContext> options)
+        : base(options)
         {
-            optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=db-pizzeria;Integrated Security=True; Encrypt=False");
+
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            // Customize the ASP.NET Identity model and override the defaults if needed.
+            // For example, you can rename the ASP.NET Identity table names and more.
+            // Add your customizations after calling base.OnModelCreating(builder);
         }
     }
 }
