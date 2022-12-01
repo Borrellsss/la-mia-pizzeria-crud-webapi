@@ -3,9 +3,11 @@
 }
 
 <div>
-    <h1>Home</h1>
-
-    <input type="text" class="js_search my-4 w-100" onkeyup="filterPizzas()" />
+    <h1 class="text-center">Home</h1>
+    <div class="form-floating mb-3">
+        <input id="pizzas-search" type="text" class="form-control js_search my-4" placeholder="Cerca pizza" onkeyup="filterPizzas()" />
+        <label for="pizzas-search">Cerca pizza</label>
+    </div>
 
     <div class="js_cards row row-cols-5">
 

@@ -2,90 +2,50 @@
     Layout = "_FrontOfficeLayout";
 }
 
-@model int;
-
-<div class="text-center js_pizza-wrapper">
-</div>
+@model Review
 
 <div>
-    <h3>Recensisci questa pizza!</h3>
+    <h1 class="text-center">Modifica recensione</h1>
     <form class="js_review-form">
 
         <div class="form-floating mb-3">
-            <input id="user-name" type="text" class="form-control" placeholder="Nome">
+            <input id="user-name" type="text" class="form-control" placeholder="Nome" value="@Model.UserName">
             <label for="user-name">Nome</label>
             <div id="js_user-name-errors" class="text-danger d-none"></div>
         </div>
 
         <div class="form-floating mb-3">
-            <textarea id="user-text" class="form-control" placeholder="Messaggio"></textarea>
+            <textarea id="user-text" class="form-control" placeholder="Messaggio">@Model.Message</textarea>
             <label for="user-text">Messaggio</label>
             <div id="js_user-text-errors" class="text-danger d-none"></div>
         </div>
 
-        <button type="button" class="btn btn-primary" onclick="sendReview()">Invia</button>
+        <button type="button" class="btn btn-primary" onclick="updateReview()">Modifica</button>
     </form>
 </div>
 
 <script type="text/javascript">
 
-    const pizzaWrapper = document.querySelector(".js_pizza-wrapper");
-
-    axios.get(`/api/pizza/details/${@Model}`)
-        .then(response => {
-            console.log(response)
-            printPizzaDetails(response.data);
-        }).catch(error => {
-            console.log(error);
-        });
-
-    function printPizzaDetails(pizza) {
-        pizzaWrapper.innerHTML += `
-            <h1>${pizza.name}</h1>
-            <div style="margin-inline: auto; width: 250px; height: 250px;">
-                <img src="${pizza.image}" alt="${pizza.name}" style="width: 100%; height: 100%; object-fit: cover;">
-            </div>
-
-            <h5>Ingredienti:</h5>
-            <div class="d-flex" style="margin-inline: auto; width: fit-content; gap: 0.5rem;">
-        `;
-
-        pizza.ingredients.forEach(ingredient => {
-            pizzaWrapper.innerHTML += `<span class="badge bg-primary">${ingredient.name}</span>`
-        })
-       
-        pizzaWrapper.innerHTML += `
-            </div>
-
-            <div class="mb-3">${pizza.categoryId != null ? pizza.category.name : "Nessuna categoria associata."}</div>
-
-            <div class="mb-3">
-                <p>${pizza.description}</p>
-                    <div class="card-text">${pizza.price} €</div>
-                <div class="${pizza.isAvailable ? "text-success" : "text-danger"}">${pizza.isAvailable ? "Disponibile" : "esaurito"}</div>
-            </div>
-        `;          
-    }
-
     const inputUserName = document.getElementById("user-name");
     const inputUserText = document.getElementById("user-text");
+
+    let startingUserName = inputUserName.value;
+    let startingUserText = inputUserText.value;
 
     //document errors wrappers
     const inputUserNameErrorsWrapper = document.getElementById("js_user-name-errors");
     const inputUserTextErrorsWrapper = document.getElementById("js_user-text-errors");
 
-    function sendReview() {
+    function updateReview() {
         inputUserNameErrorsWrapper.classList.add("d-none");
         inputUserTextErrorsWrapper.classList.add("d-none");
-
 
         inputUserNameErrorsWrapper.innerHTML = "";
         inputUserTextErrorsWrapper.innerHTML = "";
 
-        axios.post("/api/review/create", {
+        axios.put(`/api/review/update/${@Model.Id}`, {
             userName: inputUserName.value,
             message: inputUserText.value,
-            pizzaId: @Model
         })
         .then(response => {
             inputUserName.value = "";
@@ -95,9 +55,34 @@
                 title: "Grazie per il feedback!",
                 text: "La tua recensione è stata inviata correttamente",
                 icon: "success",
-                button: "Ok",
+                button: false,
             });
+
+            setTimeout(function () {
+                window.location.replace("https://localhost:7271/Review/");
+            }, 1000)
+            
         }).catch(error => {
+            if (startingUserName != "" && inputUserName.value == "") {
+                inputUserName.value = startingUserName;
+            }
+            else if (startingUserName != inputUserName.value) {
+                startingUserName = inputUserName.value;
+            }
+            else {
+                inputUserName.value = startingUserName;
+            }
+
+            if(startingUserText != "" && inputUserText.value == "") {
+                inputUserText.value = startingUserText;
+            }
+            else if (startingUserText != inputUserText.value) {
+                startingUserText = inputUserText.value
+            }
+            else {
+                inputUserText.value = startingUserText;
+            }
+
             console.log(JSON.stringify(error.response));
 
             const errors = error.response.data.errors;
@@ -110,7 +95,7 @@
                     inputUserNameErrorsWrapper.innerHTML = `<div>${mesage}</div>`;
                 })
             }
-                
+
             if (errors.Message) {
                 errors.Message.forEach(mesage => {
                     inputUserTextErrorsWrapper.innerHTML = `<div>${mesage}</div>`;

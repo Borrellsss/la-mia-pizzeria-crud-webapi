@@ -7,6 +7,7 @@
 @model PizzaForm
 
 <div>
+    <h1 class="text-center">Modifica pizza!</h1>
     <form asp-controller="Pizza" asp-action="Update" asp-route-id="@Model.Pizza.Id" method="POST">
 
         @Html.AntiForgeryToken()
@@ -40,7 +41,7 @@
             <select asp-for="Pizza.CategoryId">
                 @foreach (Category category in Model.Categories)
                 {
-                        <option value="@category.Id">@category.Name</option>
+                    <option value="@category.Id">@category.Name</option>
                 }
             </select>
             <span asp-validation-for="Pizza.CategoryId" class="text-danger"></span>
